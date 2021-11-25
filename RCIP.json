@@ -1,0 +1,11 @@
+{
+    "camera" :{
+        "iso" : 200,
+        "shutter_speed" : 3000, 
+        "resw" : 1920,
+        "resh" : 2560 
+    },
+    "export":{
+        "adr" : "./res/"
+    }
+}
