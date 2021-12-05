@@ -17,7 +17,7 @@ algoConfig = algo.loadConfig()
 def imageCaptureBySensor() :
     while True:
         if not Trigger(sensor):
-            cvImage = utils.cameraCVCapture()
+            cvImage,_ = utils.cameraCVCapture()
             imageProcessQ.put((datetime.now(),cvImage))
             print("capture at ="+str(datetime.now()))
         while not Trigger(sensor):

@@ -16,7 +16,9 @@ camera = utils.cameraInit()
 
 # img = cv2.imread("in.jpg")
 # img = cv2.resize(img,(2560,1920))
-img = utils.cameraCVCapture()
+img,raw_image = utils.cameraCVCapture()
+cv2.imshow("raw",raw_image)
+cv2.waitKey()
 pic,cp,dp=algo.ImageProcess(img,loadConfig(),algo.loadConfig(),debugFlag = True)
 
 im= pilImage.fromarray(pic)

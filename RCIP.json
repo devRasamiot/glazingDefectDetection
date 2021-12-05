@@ -3,7 +3,11 @@
         "iso" : 100,
         "shutter_speed" : 3000, 
         "resw" : 1920,
-        "resh" : 1920 
+        "resh" : 1920,
+        "cropy":400,
+        "cropdimy":1000,
+        "cropx":400,
+        "cropdimx":1000 
     },
     "export":{
         "adr" : "./res/"
