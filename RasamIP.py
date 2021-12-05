@@ -27,7 +27,7 @@ def processImage() :
     while True:
         captureTime,cvImage = imageProcessQ.get()
         print("cptrd at:"+str(captureTime)+" prc start at:"+str(datetime.now()))
-        processedImage,ceramicPercent,defectPercent = algo.ImageProcess(cvImage,utils.getConfig(),algoConfig)
+        processedImage,ceramicPercent,defectPercent = algo.ImageProcess(cvImage,utils.getConfig(),algoConfig,True)
         print("cptrd at:"+str(captureTime)+" prc end at:"+str(datetime.now()))
         imageSaveQ.put((captureTime,processedImage))
         imageProcessQ.task_done()

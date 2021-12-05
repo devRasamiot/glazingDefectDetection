@@ -1,6 +1,6 @@
 {
     "mask_threshold" :{
-        "min" : 80,
+        "min" : 100,
         "max" : 255,
         "bounding_margin" : 10    
     },

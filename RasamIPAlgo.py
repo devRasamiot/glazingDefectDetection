@@ -1,8 +1,10 @@
-from sklearn.decomposition import PCA as sklearnPCA
+# from sklearn.decomposition import PCA as sklearnPCA
 import numpy as np
 import cv2
 import json
 from datetime import datetime
+
+
 
 def loadConfig(addr = "./RCIPAlgo.json"):
     jsonFile =  open(addr)
@@ -27,25 +29,25 @@ def ImageProcess(img,utilCfg,algoCfg,debugFlag = False):
 
 
 
-def applyPCA(imgRaw,imgW,imgH,debugFlag = False):
-    img = imgRaw.reshape((imgW*imgH,3))
-    print("#### start PCA at: "+str(datetime.now()))
-    pca = sklearnPCA(n_components=1)
-    pca.fit(img)
-    Main_Dim = pca.transform(img)
-    print("#### start uniforming at: "+str(datetime.now()))
-    minPixel = min(Main_Dim)
-    maxPixel = max(Main_Dim) 
-    Main_Dim = (((Main_Dim - minPixel)/(maxPixel -minPixel))*255.0)
-    Main_Dim = Main_Dim.astype("int")
-    main_img_resize = [item[0] for item in Main_Dim]
-    main_img_resize = np.array(main_img_resize)
-    main_img_resize = main_img_resize.reshape((imgW,imgH))
-    main_img_resize = main_img_resize.astype("uint8")
-    if (debugFlag):
-        cv2.imshow("image",cv2.resize(main_img_resize,(1024,768)))
-        cv2.waitKey(0)
-        print("#### end uniforming at: "+str(datetime.now()))
+# def applyPCA(imgRaw,imgW,imgH,debugFlag = False):
+#     img = imgRaw.reshape((imgW*imgH,3))
+#     print("#### start PCA at: "+str(datetime.now()))
+#     pca = sklearnPCA(n_components=1)
+#     pca.fit(img)
+#     Main_Dim = pca.transform(img)
+#     print("#### start uniforming at: "+str(datetime.now()))
+#     minPixel = min(Main_Dim)
+#     maxPixel = max(Main_Dim) 
+#     Main_Dim = (((Main_Dim - minPixel)/(maxPixel -minPixel))*255.0)
+#     Main_Dim = Main_Dim.astype("int")
+#     main_img_resize = [item[0] for item in Main_Dim]
+#     main_img_resize = np.array(main_img_resize)
+#     main_img_resize = main_img_resize.reshape((imgW,imgH))
+#     main_img_resize = main_img_resize.astype("uint8")
+#     if (debugFlag):
+#         cv2.imshow("image",cv2.resize(main_img_resize,(1024,768)))
+#         cv2.waitKey(0)
+#         print("#### end uniforming at: "+str(datetime.now()))
 
     return main_img_resize
 
