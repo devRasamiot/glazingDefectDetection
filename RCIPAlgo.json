@@ -16,5 +16,10 @@
         "canny_max":60,
         "min_threshold":90,
         "max_threshold":255
+    },
+    "countur_detection" :{
+        "min_area_percent" : 0.001,
+        "defect_type" : "ALL"
+        
     }
 }
