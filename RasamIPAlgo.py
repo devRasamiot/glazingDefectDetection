@@ -12,12 +12,24 @@ def loadConfig(addr = "./RCIPAlgo.json"):
     return data
 
 def ImageProcess(img,utilCfg,algoCfg,debugFlag = False):
+    cropFlag = algoCfg["crop_image"]["on"]
     imgW = utilCfg["camera"]["resw"]
     imgH = utilCfg["camera"]["resh"]
     print("#### start IP at: "+str(datetime.now()))
     if (debugFlag):
+        print(img.shape)
         cv2.imshow("image",cv2.resize(img,(1024,768)))
         cv2.waitKey(0)
+    if(cropFlag):
+        y = algoCfg["crop_image"]["cropy"]
+        h = algoCfg["crop_image"]["cropdimy"]
+        x = algoCfg["crop_image"]["cropx"]
+        w = algoCfg["crop_image"]["cropdimx"]
+        img = img[y:y+h,x:x+w]
+        print(img.shape)
+        cv2.imshow("crop",img)
+        cv2.waitKey(0)
+    
     # mainDim = applyPCA(img,imgW,imgH,debugFlag)
     mainDim = applyGrayscale(img,debugFlag)
     print("#### end grayscale at: "+str(datetime.now()))
