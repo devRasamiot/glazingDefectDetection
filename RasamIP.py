@@ -4,7 +4,7 @@ from RasamIPUtils import RasamIPUtils
 import time
 import RasamIPAlgo as algo
 import traceback
-# mehdi added comment
+# mehdi added comment 12
 #Init
 utils = RasamIPUtils()
 Trigger,sensor = utils.sensorInit()
