@@ -113,21 +113,16 @@ def applyDetect(cropped,algoCfg,debugFlag = False):
         )
     if (debugFlag):
         cv2.imshow("threshold for defects",cv2.resize(thresh,(1024,768)))
-        cv2.waitKey(0)
-    
+        cv2.waitKey(0)    
     cnts,hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
-    
-    
-    
     areaerror = 0
-    num=0
-
-    
+    num=0    
     if (debugFlag):
         print(hierarchy)
             
-    limerror=algoCfg["countur_detection"]["min_area_percent"]
-    defect_type=algoCfg["countur_detection"]["defect_type"]
+    limerror=algoCfg["contour_detection"]["min_area_percent"]
+    defect_type=algoCfg["contour_detection"]["defect_type"]
+
     if defect_type=="ALL":
         cv2.drawContours(returnCanvas,  cnts, -1, (0,255,0), 1, cv2.LINE_AA)
         cnt = max(cnts, key = cv2.contourArea)
@@ -135,37 +130,31 @@ def applyDetect(cropped,algoCfg,debugFlag = False):
         for c in cnts:
             if c.shape!=cnt.shape:
                 (x, y, w, h) = cv2.boundingRect(c)
-                cv2.rectangle(returnCanvas, (x, y), (x + w, y + h), (0, 0, 255), 1)
-                areaerror=cv2.contourArea(c)+areaerror
+                areaerrorfec=cv2.contourArea(c)
+                p3=(areaerrorfec/biggestArea)*100
+            
+                if  p3>limerror:
+                    
+                    cv2.rectangle(returnCanvas, (x, y), (x + w, y + h), (0, 0,255), 1)
+                    areaerror=areaerror+areaerrorfec
 
 
     if defect_type=="BIGEST":
-
-        for c in cnts:
-            
+        for c in cnts:            
             if hierarchy[0][num][3] ==-1:
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.drawContours(returnCanvas,  [c], -1, (0,255,0), 1, cv2.LINE_AA)
-                biggestArea=cv2.contourArea(c)
-                
-    
-                
-        if hierarchy[0][num][3] ==1:
-            (x, y, w, h) = cv2.boundingRect(c)
-            cv2.drawContours(returnCanvas,  [c], -1, (255,255,0), 1, cv2.LINE_AA)
-            areaerrorfec=cv2.contourArea(c)
-            p3=(areaerrorfec/biggestArea)*100
-            
-            if  p3>limerror:
-                
-                cv2.rectangle(returnCanvas, (x, y), (x + w, y + h), (0, 255,255), 1)
-                areaerror=areaerror+areaerrorfec
-                
-            
-
-        num=num+1
-
-
+                biggestArea=cv2.contourArea(c)                  
+            if hierarchy[0][num][3] ==1:
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.drawContours(returnCanvas,  [c], -1, (255,255,0), 1, cv2.LINE_AA)
+                areaerrorfec=cv2.contourArea(c)
+                p3=(areaerrorfec/biggestArea)*100                
+                if  p3>limerror:                    
+                    cv2.rectangle(returnCanvas, (x, y), (x + w, y + h), (0, 255,255), 1)
+                    areaerror=areaerror+areaerrorfec
+            num=num+1       
+                       
     areapic=cropped.shape[0]*cropped.shape[1]
     defectPercent=round(areaerror/biggestArea,2)*100
     ceramicPercent=round(biggestArea/areapic,2)*100
