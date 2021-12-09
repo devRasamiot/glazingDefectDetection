@@ -4,10 +4,22 @@
         "max" : 255,
         "bounding_margin" : 10    
     },
+    "crop_image":{
+        "on": false,
+        "cropy":170,
+        "cropdimy":400,
+        "cropx":40,
+        "cropdimx":400 
+    },
     "edge_detection":{
         "canny_min":40,
         "canny_max":60,
         "min_threshold":90,
         "max_threshold":255
+    },
+    "contour_detection" :{
+        "min_area_percent" : 0.001,
+        "defect_type" : "ALL"
+        
     }
 }

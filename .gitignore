@@ -2,3 +2,6 @@ res/*
 out.jpeg
 RasamIPAlgo.pyc
 RasamIPUtils.pyc
+Test.py
+.gitignore
+in.jpg

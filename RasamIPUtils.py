@@ -51,9 +51,7 @@ class RasamIPUtils():
         image = np.empty((config["camera"]["resh"] * config["camera"]["resw"] * 3,), dtype=np.uint8)
         camera.capture(image,"rgb")
         image = image.reshape((config["camera"]["resw"], config["camera"]["resh"], 3))
-        # cropped_image = image[config["camera"]["cropy"]+config["camera"]["cropdimy"],config["camera"]["cropx"]+config["camera"]["cropdimx"]]
-        cropped_image = image
-        return cropped_image,image
+        return image
     
     def saveImage(self,processedImage,captureTime,config = None):
         if config is None:
