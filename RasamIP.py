@@ -20,7 +20,7 @@ def imageCaptureBySensor() :
     while True:
         if not Trigger(sensor):
             try:
-                cvImage,_ = utils.cameraCVCapture()
+                cvImage = utils.cameraCVCapture()
                 imageProcessQ.put((datetime.now(),cvImage))
                 print("capture at ="+str(datetime.now()))
             except:
