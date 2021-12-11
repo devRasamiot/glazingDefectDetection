@@ -72,16 +72,29 @@ def applyGrayscale(img,debugFlag = False):
     return mainDim 
 
 def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
-    th, thImage = cv2.threshold(
-        mainDim,
-        algoCfg["mask_threshold"]["min"],
-        algoCfg["mask_threshold"]["max"],
-        cv2.THRESH_BINARY
-        )
-    if (debugFlag):
-        cv2.imshow("thresholded for Crop",cv2.resize(thImage,(1024,768)))
-        cv2.waitKey(0)
-    cnts = cv2.findContours(thImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    croppedImage = None
+    if(algoCfg["ceramic_crop"]["alg"] == "Canny"):  
+        croppedImage = cv2.Canny(
+            mainDim,
+            algoCfg["ceramic_crop"]["canny_min"],
+            algoCfg["ceramic_crop"]["canny_max"]
+            )
+        if (debugFlag):
+            cv2.imshow("edgesImg",cv2.resize(croppedImage,(1024,768)))
+            cv2.waitKey(0)
+    elif (algoCfg["ceramic_crop"]["alg"] == "Threshold"):
+        th, croppedImage = cv2.threshold(
+            mainDim,
+            algoCfg["ceramic_crop"]["threshold_min"],
+            algoCfg["ceramic_crop"]["threshold_max"],
+            cv2.THRESH_BINARY
+            )
+        if (debugFlag):
+            cv2.imshow("thresholded for Crop",cv2.resize(croppedImage,(1024,768)))
+            cv2.waitKey(0)
+    else :
+        print("!!!!!!!!!!! Crop Algo not defiend")
+    cnts = cv2.findContours(croppedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     cnt = max(cnts, key = cv2.contourArea)
     mask = np.zeros((imgW,imgH,3), dtype=np.uint8)
     cv2.drawContours(mask, [cnt], 0, (255,255,255), cv2.FILLED)
@@ -89,7 +102,7 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
     #cutting the ceramic in photo
     x, y, w, h = cv2.boundingRect(cnt)
     # Crop the bounding rectangle out of img
-    margin = algoCfg["mask_threshold"]["bounding_margin"]
+    margin = algoCfg["ceramic_crop"]["bounding_margin"]
     out =result[(y-margin):(y+h+margin), (x-margin):(x+w+margin), :].copy()
     if (debugFlag):
         cv2.imshow("cropped",cv2.resize(out,(1024,768)))
