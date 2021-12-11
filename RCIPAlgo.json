@@ -1,15 +1,19 @@
 {
-    "mask_threshold" :{
-        "min" : 100,
-        "max" : 255,
-        "bounding_margin" : 10    
-    },
     "crop_image":{
-        "on": false,
-        "cropy":170,
-        "cropdimy":400,
-        "cropx":40,
-        "cropdimx":400 
+        "on": true,
+        "cropy":500,
+        "cropdimy":800,
+        "cropx":400,
+        "cropdimx":1200 
+    },
+    "ceramic_crop" :{
+        "algComment": "Next parameter you can use one of 'Canny' or 'Threshold'",
+        "alg" : "Canny",
+        "canny_min":40,
+        "canny_max":60,        
+        "threshold_min" : 250,
+        "threshold_max" : 255,
+        "bounding_margin" : 10 
     },
     "edge_detection":{
         "canny_min":40,

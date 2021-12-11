@@ -5,3 +5,6 @@ RasamIPAlgo.pyc
 RasamIPUtils.pyc
 Test.py
 .gitignore
+out.jpeg
+__pycache__/RasamIPAlgo.cpython-39.pyc
+in2.jpg
