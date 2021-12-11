@@ -23,6 +23,7 @@ def imageCaptureBySensor() :
                 cvImage = utils.cameraCVCapture()
                 imageProcessQ.put((datetime.now(),cvImage))
                 print("capture at ="+str(datetime.now()))
+                imageSaveQ.put((datetime.now(),cvImage))
             except:
                 traceback.print_exc()
         while not Trigger(sensor):

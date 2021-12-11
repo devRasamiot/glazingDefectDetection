@@ -6,10 +6,10 @@
     },
     "crop_image":{
         "on": false,
-        "cropy":170,
-        "cropdimy":400,
-        "cropx":40,
-        "cropdimx":400 
+        "cropy":500,
+        "cropdimy":800,
+        "cropx":500,
+        "cropdimx":1200 
     },
     "edge_detection":{
         "canny_min":40,
