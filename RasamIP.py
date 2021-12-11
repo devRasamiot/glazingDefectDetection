@@ -4,6 +4,7 @@ from RasamIPUtils import RasamIPUtils
 import time
 import RasamIPAlgo as algo
 import traceback
+# mehdi added comment 1234
 
 #Init
 utils = RasamIPUtils()
@@ -19,7 +20,7 @@ def imageCaptureBySensor() :
     while True:
         if not Trigger(sensor):
             try:
-                cvImage,_ = utils.cameraCVCapture()
+                cvImage = utils.cameraCVCapture()
                 imageProcessQ.put((datetime.now(),cvImage))
                 print("capture at ="+str(datetime.now()))
             except:
