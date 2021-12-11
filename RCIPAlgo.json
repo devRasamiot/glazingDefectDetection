@@ -1,19 +1,21 @@
 {
     "crop_image":{
         "on": true,
-        "cropy":500,
-        "cropdimy":800,
-        "cropx":400,
-        "cropdimx":1200 
+        "cropy":300,
+        "cropdimy":1200,
+        "cropx":350,
+        "cropdimx":1300 
     },
     "ceramic_crop" :{
         "algComment": "Next parameter you can use one of 'Canny' or 'Threshold'",
         "alg" : "Canny",
-        "canny_min":40,
-        "canny_max":60,        
+        "canny_min":50,
+        "canny_max":100,        
         "threshold_min" : 250,
         "threshold_max" : 255,
-        "bounding_margin" : 10 
+        "bounding_margin" : 10,
+        "canny_thr_min":10,
+        "canny_thr_max":255 
     },
     "edge_detection":{
         "canny_min":40,

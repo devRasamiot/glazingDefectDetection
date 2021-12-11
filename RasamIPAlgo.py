@@ -82,12 +82,22 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
         if (debugFlag):
             cv2.imshow("edgesImg",cv2.resize(croppedImage,(1024,768)))
             cv2.waitKey(0)
+        th, croppedImage = cv2.threshold(
+            croppedImage,
+            algoCfg["ceramic_crop"]["canny_thr_min"],
+            algoCfg["ceramic_crop"]["canny_thr_max"],
+            cv2.THRESH_BINARY
+            )
+        if (debugFlag):
+            cv2.imshow("canny thresholded",cv2.resize(croppedImage,(1024,768)))
+            cv2.waitKey(0)
+
     elif (algoCfg["ceramic_crop"]["alg"] == "Threshold"):
         th, croppedImage = cv2.threshold(
             mainDim,
             algoCfg["ceramic_crop"]["threshold_min"],
             algoCfg["ceramic_crop"]["threshold_max"],
-            cv2.THRESH_BINARY
+            cv2.THRESH_BINARY_INV
             )
         if (debugFlag):
             cv2.imshow("thresholded for Crop",cv2.resize(croppedImage,(1024,768)))
@@ -95,9 +105,15 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
     else :
         print("!!!!!!!!!!! Crop Algo not defiend")
     cnts = cv2.findContours(croppedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    cv2.drawContours(croppedImage,  cnts, -1, (255,255,255), 1, cv2.LINE_AA)
+    cnts = cv2.findContours(croppedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     cnt = max(cnts, key = cv2.contourArea)
-    mask = np.zeros((imgW,imgH,3), dtype=np.uint8)
+    mask = np.zeros(img.shape, dtype=np.uint8)
     cv2.drawContours(mask, [cnt], 0, (255,255,255), cv2.FILLED)
+    cv2.imshow("masked",mask)
+    cv2.waitKey(0)
+    print(img.shape)
+    print(mask.shape)
     result = cv2.bitwise_and(img, mask,mask=None)
     #cutting the ceramic in photo
     x, y, w, h = cv2.boundingRect(cnt)
