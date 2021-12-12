@@ -9,7 +9,7 @@ def loadConfig(addr = "./RCIP.json"):
     data = json.load(jsonFile)
     return data
 
-img = cv2.imread("in2.jpg")
+img = cv2.imread("in.jpg")
 img = cv2.resize(img,(1920,1920))
 pic,cp,dp=algo.ImageProcess(img,loadConfig(),algo.loadConfig(),debugFlag = True)
 

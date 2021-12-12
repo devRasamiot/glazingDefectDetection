@@ -67,7 +67,7 @@ def applyGrayscale(img,debugFlag = False):
     mainDim = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
     mainDim = mainDim.astype("uint8")
     if (debugFlag):
-        cv2.imshow("image",cv2.resize(mainDim,(1024,768)))
+        cv2.imshow("Grayscale",cv2.resize(mainDim,(1024,768)))
         cv2.waitKey(0)
     return mainDim 
 
@@ -115,35 +115,44 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
     print(img.shape)
     print(mask.shape)
     result = cv2.bitwise_and(img, mask,mask=None)
+    cv2.imshow("result",result)
+    cv2.waitKey(0)
+
     #cutting the ceramic in photo
     x, y, w, h = cv2.boundingRect(cnt)
     # Crop the bounding rectangle out of img
     margin = algoCfg["ceramic_crop"]["bounding_margin"]
     out =result[(y-margin):(y+h+margin), (x-margin):(x+w+margin), :].copy()
     if (debugFlag):
-        cv2.imshow("cropped",cv2.resize(out,(1024,768)))
+        cv2.imshow("cropped",out)
         cv2.waitKey(0)
     return out
 
 
 
 def applyDetect(cropped,algoCfg,debugFlag = False):
-    returnCanvas = cropped.copy()
-    edgesImg = cv2.Canny(
-        cropped,
-        algoCfg["edge_detection"]["canny_min"],
-        algoCfg["edge_detection"]["canny_max"]
-        )
+    returnCanvas = cropped.copy()    
+    # edgesImg = cv2.Canny(
+    #     cropped,
+    #     algoCfg["edge_detection"]["canny_min"],
+    #     algoCfg["edge_detection"]["canny_max"]
+    #     )
     th, thresh = cv2.threshold(
-        edgesImg,
+        cropped,
         algoCfg["edge_detection"]["min_threshold"],
         algoCfg["edge_detection"]["max_threshold"],
         cv2.THRESH_BINARY
         )
+
     if (debugFlag):
-        cv2.imshow("threshold for defects",cv2.resize(thresh,(1024,768)))
-        cv2.waitKey(0)    
-    cnts,hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        cv2.imshow("threshold for defects2",cv2.resize(thresh,(1024,768)))
+        cv2.waitKey(0) 
+    
+
+    print(thresh.shape)
+
+    cnts,hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
     areaerror = 0
     num=0    
     if (debugFlag):

@@ -17,6 +17,7 @@ imageSaveQ = Queue.Queue()
 algoConfig = algo.loadConfig()
 
 def imageCaptureBySensor() :
+    
     while True:
         if not Trigger(sensor):
             try:
