@@ -18,13 +18,13 @@
         "canny_thr_max":255 
     },
     "edge_detection":{
-        "canny_min":10,
-        "canny_max":45,
+        "canny_min":15,
+        "canny_max":40,
         "min_threshold":70,
         "max_threshold":255
     },
     "contour_detection" :{
-        "min_area_percent" : 2.0,
+        "min_area_percent" : 0.65,
         "defect_type" : "ALL"
         
     }
