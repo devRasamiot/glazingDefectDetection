@@ -27,8 +27,6 @@ def ImageProcess(img,utilCfg,algoCfg,debugFlag = False):
         w = algoCfg["crop_image"]["cropdimx"]
         img = img[y:y+h,x:x+w]
         print(img.shape)
-        cv2.imshow("crop",img)
-        cv2.waitKey(0)
     
     # mainDim = applyPCA(img,imgW,imgH,debugFlag)
     mainDim = applyGrayscale(img,debugFlag)
@@ -97,7 +95,7 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
             mainDim,
             algoCfg["ceramic_crop"]["threshold_min"],
             algoCfg["ceramic_crop"]["threshold_max"],
-            cv2.THRESH_BINARY_INV
+            cv2.THRESH_BINARY
             )
         if (debugFlag):
             cv2.imshow("thresholded for Crop",cv2.resize(croppedImage,(1024,768)))
@@ -108,37 +106,39 @@ def applyCrop (img,mainDim,algoCfg,imgW,imgH,debugFlag = False):
     cv2.drawContours(croppedImage,  cnts, -1, (255,255,255), 1, cv2.LINE_AA)
     cnts = cv2.findContours(croppedImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     cnt = max(cnts, key = cv2.contourArea)
+  
     mask = np.zeros(img.shape, dtype=np.uint8)
     cv2.drawContours(mask, [cnt], 0, (255,255,255), cv2.FILLED)
-    cv2.imshow("masked",mask)
-    cv2.waitKey(0)
-    print(img.shape)
-    print(mask.shape)
     result = cv2.bitwise_and(img, mask,mask=None)
-    cv2.imshow("result",result)
-    cv2.waitKey(0)
-
     #cutting the ceramic in photo
     x, y, w, h = cv2.boundingRect(cnt)
+ 
     # Crop the bounding rectangle out of img
     margin = algoCfg["ceramic_crop"]["bounding_margin"]
-    out =result[(y-margin):(y+h+margin), (x-margin):(x+w+margin), :].copy()
+    
+    out =result[(y):(y+h), (x):(x+w), :].copy()
+
     if (debugFlag):
-        cv2.imshow("cropped",out)
+        cv2.imshow("cropped",cv2.resize(out,(1024,768)))
         cv2.waitKey(0)
-    return out
+    return result
 
 
 
 def applyDetect(cropped,algoCfg,debugFlag = False):
     returnCanvas = cropped.copy()    
-    # edgesImg = cv2.Canny(
-    #     cropped,
-    #     algoCfg["edge_detection"]["canny_min"],
-    #     algoCfg["edge_detection"]["canny_max"]
-    #     )
-    th, thresh = cv2.threshold(
+    edgesImg = cv2.Canny(
         cropped,
+        algoCfg["edge_detection"]["canny_min"],
+        algoCfg["edge_detection"]["canny_max"]
+        )
+    
+    if (debugFlag):
+        cv2.imshow("Canny On Image",cv2.resize(edgesImg,(1024,768)))
+        cv2.waitKey(0)  
+
+    th, thresh = cv2.threshold(
+        edgesImg,
         algoCfg["edge_detection"]["min_threshold"],
         algoCfg["edge_detection"]["max_threshold"],
         cv2.THRESH_BINARY
@@ -146,15 +146,12 @@ def applyDetect(cropped,algoCfg,debugFlag = False):
 
     if (debugFlag):
         cv2.imshow("threshold for defects2",cv2.resize(thresh,(1024,768)))
-        cv2.waitKey(0) 
+        cv2.waitKey(0)     
     
-
-    print(thresh.shape)
-
-    cnts,hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
+    im,cnts,hierarchy= cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     areaerror = 0
-    num=0    
+    num=0   
+
     if (debugFlag):
         print(hierarchy)
             
@@ -170,6 +167,7 @@ def applyDetect(cropped,algoCfg,debugFlag = False):
                 (x, y, w, h) = cv2.boundingRect(c)
                 areaerrorfec=cv2.contourArea(c)
                 p3=(areaerrorfec/biggestArea)*100
+               
             
                 if  p3>limerror:
                     
@@ -183,7 +181,7 @@ def applyDetect(cropped,algoCfg,debugFlag = False):
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.drawContours(returnCanvas,  [c], -1, (0,255,0), 1, cv2.LINE_AA)
                 biggestArea=cv2.contourArea(c)                  
-            if hierarchy[0][num][3] ==1:
+            if hierarchy[0][num][3] !=-1:
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.drawContours(returnCanvas,  [c], -1, (255,255,0), 1, cv2.LINE_AA)
                 areaerrorfec=cv2.contourArea(c)

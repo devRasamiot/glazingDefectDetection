@@ -4,33 +4,25 @@ from RasamIPUtils import RasamIPUtils
 import time
 import RasamIPAlgo as algo
 import traceback
-# mehdi added comment 1234
-
 #Init
 utils = RasamIPUtils()
-Trigger,sensor = utils.sensorInit()
 camera = utils.cameraInit()
 
-# Q cration
+# Q creation
 imageProcessQ = Queue.Queue()
 imageSaveQ = Queue.Queue()
 algoConfig = algo.loadConfig()
 
-def imageCaptureBySensor() :
-    
-    while True:
-        if not Trigger(sensor):
-            try:
-                cvImage = utils.cameraCVCapture()
-                imageProcessQ.put((datetime.now(),cvImage))
-                print("capture at ="+str(datetime.now()))
-                imageSaveQ.put((datetime.now(),cvImage))
-            except:
-                traceback.print_exc()
-        while not Trigger(sensor):
-            time.sleep(0.2)
+def imageCaptureBySensor(channel) :
+    try:
+        cvImage = utils.cameraCVCapture()
+        imageProcessQ.put((datetime.now(),cvImage))
+        print("capture at ="+str(datetime.now()))
+        imageSaveQ.put((datetime.now(),cvImage))
+    except:
+        traceback.print_exc()
 
-def processImage() :
+def processImage():
     while True:
         captureTime,cvImage = imageProcessQ.get()
         try:
@@ -39,7 +31,7 @@ def processImage() :
             print("cptrd at:"+str(captureTime)+" prc end at:"+str(datetime.now()))
             imageSaveQ.put((captureTime,processedImage))
         except:
-                traceback.print_exc()
+            traceback.print_exc()
         imageProcessQ.task_done()
 
 def saveImage():
@@ -53,10 +45,16 @@ def saveImage():
                 traceback.print_exc()
         imageSaveQ.task_done()
 
-imageCaptureThread = threading.Thread(target=imageCaptureBySensor)
+utils.sensorInit(imageCaptureBySensor)
+
+imageCaptureThread = threading.Thread(target=imageCaptureBySensor,args=[1])
 processImageThread = threading.Thread(target=processImage)
 saveImageThread = threading.Thread(target=saveImage)
 
 imageCaptureThread.start()
 processImageThread.start()
 saveImageThread.start()
+
+import signal              
+signal.signal(signal.SIGINT, utils.signal_handler)
+signal.pause()
