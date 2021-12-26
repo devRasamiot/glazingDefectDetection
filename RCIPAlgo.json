@@ -1,6 +1,6 @@
 {
     "crop_image":{
-        "on": true,
+        "on": false,
         "cropy":300,
         "cropdimy":1200,
         "cropx":350,
@@ -8,23 +8,23 @@
     },
     "ceramic_crop" :{
         "algComment": "Next parameter you can use one of 'Canny' or 'Threshold'",
-        "alg" : "Canny",
+        "alg" : "Threshold",
         "canny_min":30,
-        "canny_max":80,        
-        "threshold_min" : 200,
+        "canny_max":150,        
+        "threshold_min" : 80,
         "threshold_max" : 255,
         "bounding_margin" : 10,
         "canny_thr_min":70,
         "canny_thr_max":255 
     },
     "edge_detection":{
-        "canny_min":15,
+        "canny_min":20,
         "canny_max":40,
         "min_threshold":70,
         "max_threshold":255
     },
     "contour_detection" :{
-        "min_area_percent" : 0.65,
+        "min_area_percent" : 1.5,
         "defect_type" : "ALL"
         
     }
