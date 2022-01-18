@@ -16,17 +16,17 @@ num=0
 def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode=False,cropCalibrationmode=False):
 
 
-    # blur = cv2.blur(img,(3,3))
-    # if (debugFlag):
-    #     cv2.imshow("BLUR",cv2.resize(blur,(1024,768)))
-    #     cv2.waitKey(0)
-    # sharpen_kernel=algoCfg["corner_detection"]["sharpen_kernel"]
-    # sharpen_kernel=np.array(sharpen_kernel)
-    # sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
-    # if (debugFlag):
-    #         cv2.imshow("sharpen",cv2.resize(blur,(1024,768)))
-    #         cv2.waitKey(0)
-    # img = sharpen
+    blur = cv2.blur(img,(3,3))
+    if (debugFlag):
+        cv2.imshow("BLUR",cv2.resize(blur,(1024,768)))
+        cv2.waitKey(0)
+    sharpen_kernel=algoCfg["corner_detection"]["sharpen_kernel"]
+    sharpen_kernel=np.array(sharpen_kernel)
+    sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
+    if (debugFlag):
+            cv2.imshow("sharpen",cv2.resize(blur,(1024,768)))
+            cv2.waitKey(0)
+    img = sharpen
     defisheyeimage=DefisheyeImage(img,algoCfg,debugFlag)
     if(debugFlag):
         cv2.imwrite("undistorted.jpg",defisheyeimage)
@@ -327,11 +327,9 @@ def CalculateAngle(img,pointsList,debugFlag = False):
         if (debugFlag):
             cv2.putText(image,str(angR),(pointsList[i][0]-20,pointsList[i][1]-20),cv2.FONT_HERSHEY_COMPLEX,
                 1.5,(0,0,255),2)
-        angD.append(angR)
-   
         cv2.imshow("angle",cv2.resize(image,(1024,768)))
         cv2.waitKey(0) 
-
+        angD.append(angR)
 
     return angD,image
 

@@ -2,8 +2,8 @@
     "camera" :{
         "iso" : 200,
         "shutter_speed" : 3000, 
-        "resw" : 1920,
-        "resh" : 1920
+        "resw" : 1936,
+        "resh" : 2592
     },
     "export":{
         "adr" : "./res/"

@@ -1,4 +1,4 @@
-import threading, Queue
+import threading, queue
 from datetime import datetime
 from RasamIPUtils import RasamIPUtils
 import time
@@ -10,8 +10,8 @@ utils = RasamIPUtils()
 camera = utils.cameraInit()
 
 # Q creation
-imageProcessQ = Queue.Queue()
-imageSaveQ = Queue.Queue()
+imageProcessQ = queue.Queue()
+imageSaveQ = queue.Queue()
 algoConfig = algo.loadConfig()
 randAlgoConfig = randAlgo.loadConfig()
 
