@@ -22,8 +22,8 @@
     },
     "corner_detection":{
         "sharpen_kernel":[[0,-1,0], [-1,5,-1], [0,-1,0]],
-        "canny_min":60,
-        "canny_max":100,
+        "canny_min":20,
+        "canny_max":40,
         "point_mask_margin": 5  
 
     },

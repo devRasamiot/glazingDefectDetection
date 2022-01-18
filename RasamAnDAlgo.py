@@ -16,17 +16,19 @@ num=0
 def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode=False,cropCalibrationmode=False):
 
 
-    blur = cv2.blur(img,(3,3))
-    if (debugFlag):
-        cv2.imshow("BLUR",cv2.resize(blur,(1024,768)))
-        cv2.waitKey(0)
-    sharpen_kernel=algoCfg["corner_detection"]["sharpen_kernel"]
-    sharpen_kernel=np.array(sharpen_kernel)
-    sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
-    if (debugFlag):
-            cv2.imshow("sharpen",cv2.resize(blur,(1024,768)))
-            cv2.waitKey(0)
-    img = sharpen
+    # blur = cv2.blur(img,(3,3))
+    # if (debugFlag):
+    #     cv2.imshow("BLUR",cv2.resize(blur,(1024,768)))
+    #     cv2.waitKey(0)
+    # sharpen_kernel=algoCfg["corner_detection"]["sharpen_kernel"]
+    # sharpen_kernel=np.array(sharpen_kernel)
+    # sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
+    # if (debugFlag):
+    #         cv2.imshow("sharpen",cv2.resize(sharpen,(1024,768)))
+    #         cv2.waitKey(0)
+    # img = sharpen
+    
+    
     defisheyeimage=DefisheyeImage(img,algoCfg,debugFlag)
     if(debugFlag):
         cv2.imwrite("undistorted.jpg",defisheyeimage)
@@ -168,9 +170,36 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
     canny_max=algoCfg["corner_detection"]["canny_max"]
     sharpen_kernel=np.array(sharpen_kernel)
 
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur = cv2.medianBlur(gray, 5)
+    if (debugFlag):
+            cv2.imshow("blur",cv2.resize(blur,(1024,768)))
+            cv2.waitKey(0)
+    sharpen_kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
+    if (debugFlag):
+            cv2.imshow("sharpen",cv2.resize(sharpen,(1024,768)))
+            cv2.waitKey(0)
 
-    canny = cv2.Canny(img ,canny_min,canny_max)
-    # #################################
+    thresh = cv2.threshold(sharpen,160,255, cv2.THRESH_BINARY_INV)[1]
+    if (debugFlag):
+        cv2.imshow("thresh",cv2.resize(thresh,(1024,768)))
+        cv2.waitKey(0)
+    
+    canny = cv2.Canny(sharpen ,canny_min,canny_max)
+        
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+    close = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel, iterations=2)
+    if (debugFlag):
+            cv2.imshow("close",cv2.resize(close,(1024,768)))
+            cv2.waitKey(0)
+    
+    # img = cv2.cvtColor(close, cv2.COLOR_GRAY2RGB)
+
+    canny = cv2.Canny(close ,canny_min,canny_max)
+
+    # canny = cv2.Canny(img ,canny_min,canny_max)
+    # # #################################
     # canny = cv2.Canny(img,canny_min,canny_max)
     # #################################
     # gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -206,7 +235,7 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
     if (debugFlag):
         cv2.imshow("cannyImage",cv2.resize(canny,(1024,768)))
         cv2.waitKey(0)
-    cnts,_ = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts,_ = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     innerCnts = []
     outerCnts = []
     if(maskPoint is None):
@@ -271,7 +300,7 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
             # print ("hierarchy##########\n",h[0][i])
             cv2.imshow(str(j),cv2.resize(image,(1024,768)))
             cv2.waitKey(0)
-            if( i>=10):
+            if( j>=10):
                 break
  
     peri = cv2.arcLength(cnts[0], True) 
