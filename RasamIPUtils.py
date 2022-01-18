@@ -4,6 +4,8 @@ import time
 import picamera
 import numpy as np
 from PIL import Image as pilImage
+import sys
+
 
 class RasamIPUtils():
     def __init__(self):
@@ -13,13 +15,19 @@ class RasamIPUtils():
     
     def getConfig(self):
         return self.defaultConfig
+    def signal_handler(sig, frame):
+        GPIO.cleanup()
+        sys.exit(0)
     
-    def sensorInit(self,sensor = 18):
+    def sensorInit(self,button_callback,BUTTON_GPIO = 18):
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(sensor,GPIO.IN)
+        GPIO.setup(BUTTON_GPIO, GPIO.IN)
+        GPIO.add_event_detect(BUTTON_GPIO, GPIO.FALLING, 
+                callback=button_callback, bouncetime=50)
+        
         print ("IR Sensor Ready.....")
         print (" ")
-        return GPIO.input,sensor
+
 
     def loadConfig(self,addr = None):
         if addr is None:

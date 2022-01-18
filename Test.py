@@ -16,4 +16,5 @@ img = cv2.imread("in9.jpg")
 anggle=randAlgo.AngelDetectionAlgo(img,loadConfig(),randAlgo.loadConfig(),debugFlag = True,persCalibrationmode=False,cropCalibrationmode=False)
 # im= pilImage.fromarray(pic)
 # im.save("out.jpeg")
+
 cv2.waitKey()
