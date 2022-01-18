@@ -1,0 +1,51 @@
+{
+    "defisheye_image":{
+    "DIM":[2592, 1944],
+    "K":[[1111.9865539859, 0.0, 1208.5863869568796], [0.0, 1109.8571288005417, 836.8458946828345], [0.0, 0.0, 1.0]],
+    "D":[[-0.05501280593226953], [-0.029362677688009896], [0.04096652168504248], [-0.01685192335816643]]    
+    },
+    "unperspectiv_image":{
+        "matrix":[[ 2.79827760e+00, -6.05703421e-02, -2.00070157e+03],
+        [ 5.43916268e-01,  2.45115993e+00, -1.08971558e+03],
+        [ 4.15886278e-04,  5.96280132e-05,  1.00000000e+00]],
+        "tileW":750,
+        "tileH":750,
+        "widthImg":2000,
+        "heightImg":2000
+
+    },
+    "point_mask":{
+        "P1":[570, 584],
+        "P2": [1440, 696],
+        "P3": [532, 1286],
+        "P4": [1438, 1412]
+    },
+    "corner_detection":{
+        "sharpen_kernel":[[0,-1,0], [-1,5,-1], [0,-1,0]],
+        "canny_min":80,
+        "canny_max":160,
+        "point_mask_margin": 5  
+
+    },
+    "ceramic_crop" :{
+        "algComment": "Next parameter you can use one of 'Canny' or 'Threshold'",
+        "alg" : "Canny",
+        "canny_min":50,
+        "canny_max":100,        
+        "threshold_min" : 250,
+        "threshold_max" : 255,
+        "bounding_margin" : 10,
+        "canny_thr_min":10,
+        "canny_thr_max":255
+    }
+}
+
+
+
+
+
+
+
+
+
+
