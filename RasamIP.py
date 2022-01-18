@@ -4,6 +4,7 @@ from RasamIPUtils import RasamIPUtils
 import time
 import RasamIPAlgo as algo
 import traceback
+import RasamAnDAlgo as randAlgo
 #Init
 utils = RasamIPUtils()
 camera = utils.cameraInit()
@@ -12,6 +13,7 @@ camera = utils.cameraInit()
 imageProcessQ = Queue.Queue()
 imageSaveQ = Queue.Queue()
 algoConfig = algo.loadConfig()
+randAlgoConfig = randAlgo.loadConfig()
 
 def imageCaptureBySensor(channel) :
     try:
@@ -27,7 +29,8 @@ def processImage():
         captureTime,cvImage = imageProcessQ.get()
         try:
             print("cptrd at:"+str(captureTime)+" prc start at:"+str(datetime.now()))
-            processedImage,ceramicPercent,defectPercent = algo.ImageProcess(cvImage,utils.getConfig(),algoConfig,True)
+            # processedImage,ceramicPercent,defectPercent = algo.ImageProcess(cvImage,utils.getConfig(),algoConfig,True)
+            processedImage,_ = randAlgo.AngelDetectionAlgo(cvImage,utils.getConfig(),randAlgoConfig)
             print("cptrd at:"+str(captureTime)+" prc end at:"+str(datetime.now()))
             imageSaveQ.put((captureTime,processedImage))
         except:

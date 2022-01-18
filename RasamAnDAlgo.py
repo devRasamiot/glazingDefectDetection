@@ -1,4 +1,3 @@
-from re import A
 import numpy as np
 import cv2
 import json
@@ -56,9 +55,9 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
     approx1,approx2=CornerDetection( result,mask,algoCfg,debugFlag)
     pointsList = findOrderedTileCorners(approx1,approx2)
 
-    angle,image=CalculateAngle(image, pointsList,debugFlag )
+    angle,resImage=CalculateAngle(image, pointsList,debugFlag )
     print(angle)
-    return angle,image
+    return resImage,angle
 
 
 
