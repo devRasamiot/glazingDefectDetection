@@ -67,7 +67,7 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
     approx1,approx2=CornerDetection( result,mask,algoCfg,debugFlag)
     pointsList = findOrderedTileCorners(approx1,approx2)
 
-    angle,resImage=CalculateAngle(image, pointsList,debugFlag )
+    angle,resImage=CalculateAngle2(image, pointsList,debugFlag )
     img,ratiodiameter=CalculateDiameter(resImage,pointsList)
     print(angle)
     return img,angle,ratiodiameter
@@ -294,8 +294,8 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
             image=img.copy()
             cv2.drawContours(image, [cWalk], -1, (0, 0, 255), 5) 
             # print ("hierarchy##########\n",h[0][i])
-            cv2.imshow(str(i),cv2.resize(image,(1024,768)))
-            cv2.waitKey(0)
+            # cv2.imshow(str(i),cv2.resize(image,(1024,768)))
+            # cv2.waitKey(0)
             if( i>=10):
                 break
     cv2.drawContours(mask, cnts, -1, color=(0, 0,0), thickness=cv2.FILLED)
@@ -373,6 +373,81 @@ def CalculateAngle(img,pointsList,debugFlag = False):
 
     return angD,image
 
+def CalculateAngle2(img,pointsList,debugFlag = False):
+    angD=[]
+    image=img.copy()
+    pointsList=[[313,313],[686,313],[680,685],[300,686]]
+    # cv2.circle(image,pointsList[1],5,(0,0,255),cv2.FILLED)
+    # cv2.circle(image,pointsList[2],5,(0,0,255),cv2.FILLED)
+    # cv2.circle(image,pointsList[3],5,(0,0,255),cv2.FILLED)
+    # cv2.circle(defisheyeimage,(1658,367),5,(0,255,0),cv2.FILLED)
+    # cv2.circle(defisheyeimage,(891,1172),5,(255,0,0),cv2.FILLED)
+    # cv2.circle(defisheyeimage,(1720,1232),5,(255,255,0),cv2.FILLED)
+    cv2.imshow("deg",cv2.resize(image,(1024,768)))
+    cv2.waitKey(0)
+    print("###########################")
+    print(pointsList)
+    def gradient(pt1,pt2):
+        return (pt2[1]-pt1[1])/(pt2[0]-pt1[0])
+    for i in range(4):
+        cv2.circle(image,pointsList[i],5,(0,0,255),cv2.FILLED)
+        cv2.imshow("deg",cv2.resize(image,(1024,768)))
+        cv2.waitKey(0)
+        print(i)
+        # print(pointsList[i])
+        # print(pointsList[i-1])
+        m1=gradient(pointsList[i],pointsList[i-1])
+        print("m1")
+        print(m1)
+        if i!=3:
+            # print(pointsList[i+1])
+            m2=gradient(pointsList[i],pointsList[i+1])
+            # print("m2")
+            # print(m2)
+        else:
+            m2=gradient(pointsList[i],pointsList[0])
+            # print("m2")
+            # print(m2)
+
+        if abs(m1)==float('inf'):
+            # print("m1 is inffini")
+            # print(i)
+            ang = abs(math.atan((m2-0)/(1+(m2*0))))
+            # print(ang)
+            ang=90.00000-ang
+            # print(ang)
+
+        if abs(m2)==float('inf'):
+            # print("m2is infin")
+            # print(i)
+            ang = abs(math.atan((0-m1)/(1+(0*m1))))
+            ang=90.00000-ang
+            # print(ang)
+            
+
+        
+
+        if (abs(m1)!=float('inf') and abs(m2)!=float('inf')):  
+                # print("m1 and m2")
+                # print(m1)
+                # print(m2)      
+                ang = abs(math.atan((m2-m1)/(1+(m2*m1))))
+                ang=math.degrees(ang)
+                # print(ang)
+     
+        angR = round(ang,5)
+        print(angR)
+        if (debugFlag):
+            cv2.putText(image,str(angR),(pointsList[i][0]-20,pointsList[i][1]-20),cv2.FONT_HERSHEY_COMPLEX,
+                1.5,(0,0,255),2)
+        angD.append(angR)
+
+
+    print(angD)
+
+
+
+    return angD,image
 
 
 def CalculateDiameter(image,pointsList):
