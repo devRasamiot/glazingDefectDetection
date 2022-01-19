@@ -15,7 +15,7 @@ num=0
 
 def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode=False,cropCalibrationmode=False):
 
-
+    print("#### startAnD at: "+str(datetime.now()))
     # blur = cv2.blur(img,(3,3))
     # if (debugFlag):
     #     cv2.imshow("BLUR",cv2.resize(blur,(1024,768)))
@@ -68,7 +68,7 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
     pointsList = findOrderedTileCorners(approx1,approx2)
 
     angle,resImage=CalculateAngle2(image, pointsList,debugFlag )
-    img,ratiodiameter=CalculateDiameter(resImage,pointsList)
+    img,ratiodiameter=CalculateDiameter(resImage,pointsList,debugFlag)
     print(angle)
     return img,angle,ratiodiameter
 
@@ -93,7 +93,7 @@ def DefisheyeImage(img,algoCfg,debugFlag = False):
         cv2.imshow("Undistort Image",cv2.resize(undistorted_img,(1024,768)))
         cv2.waitKey(0)
     undistorted_img = undistorted_img.astype("uint8")
-    # print("######end defisheye"+str(datetime.datetime.now()))
+    print("######end defisheye"+str(datetime.now()))
     return undistorted_img
 
 
@@ -106,6 +106,8 @@ def UnpersPective(img,algoCfg,debugFlag = False):
     heightImg= algoCfg["unperspectiv_image"]["heightImg"]  
     matrix = np.array(matrix)    
     imgWarpColored = cv2.warpPerspective(img, matrix, (widthImg, heightImg))
+    print("######end UnpersPective"+str(datetime.now()))
+
     if (debugFlag):
         cv2.imshow("unperspective Image",cv2.resize(imgWarpColored,(1024,768)))
         cv2.waitKey(0)
@@ -168,6 +170,7 @@ def maskonimage(img,algoCfg,debugFlag = False,maskPoint = None):
     cv2.rectangle(mask, (P3), (P4), (255, 255, 255), -1)
     result = cv2.bitwise_and(img, mask,mask=None)
     result[np.all(result == (0, 0, 0), axis=-1)] = (0,255,0)
+    print("######end maskonimage"+str(datetime.now()))
     if(debugFlag):
         cv2.imshow("mask",cv2.resize(mask,(1024,768)))
         cv2.waitKey(0)
@@ -329,6 +332,7 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
         print(approx1)
         cv2.imshow("approx",cv2.resize(image,(1024,768)))
         cv2.waitKey(0)
+    print("######end CornerDetection"+str(datetime.now()))
     
     return approx1,approx2
 
@@ -349,6 +353,7 @@ def findOrderedTileCorners(pointsList1,pointsList2):
     pointsList[1] = topPoint[1]
     pointsList[2] = bottomPoint[1]
     pointsList[3] = bottomPoint[0]
+    print("######end findOrderedTileCorners"+str(datetime.now()))
     return pointsList
 
 
@@ -371,13 +376,14 @@ def CalculateAngle(img,pointsList,debugFlag = False):
         cv2.waitKey(0) 
         angD.append(angR)
 
+    print("######end CalculateAngle"+str(datetime.now()))
+
     return angD,image
 
 def CalculateAngle2(img,pointsList,debugFlag = False):
     angD=[]
     image=img.copy()
   
-    print(pointsList)
     # pointslist=[[313,313],[686,313],[686,685],[313,686]]
     # cv2.circle(image,pointsList[1],5,(0,0,255),cv2.FILLED)
     # cv2.circle(image,pointsList[2],5,(0,0,255),cv2.FILLED)
@@ -392,9 +398,10 @@ def CalculateAngle2(img,pointsList,debugFlag = False):
     def gradient(pt1,pt2):
         return (pt2[1]-pt1[1])/(pt2[0]-pt1[0])
     for i in range(4):
-        cv2.circle(image,pointsList[i],5,(0,0,255),cv2.FILLED)
-        cv2.imshow("deg",cv2.resize(image,(1024,768)))
-        cv2.waitKey(0)
+        if(debugFlag):
+            cv2.circle(image,pointsList[i],5,(0,0,255),cv2.FILLED)
+            cv2.imshow("deg",cv2.resize(image,(1024,768)))
+            cv2.waitKey(0)
         # print(i)
    
         m1=gradient(pointsList[i],pointsList[i-1])
@@ -437,7 +444,6 @@ def CalculateAngle2(img,pointsList,debugFlag = False):
                 # print(ang)
      
         angR = round(ang,5)
-        print(angR)
         if (debugFlag):
             cv2.putText(image,str(angR),(pointsList[i][0]-20,pointsList[i][1]-20),cv2.FONT_HERSHEY_COMPLEX,
                 1.5,(0,0,255),2)
@@ -454,37 +460,40 @@ def CalculateAngle2(img,pointsList,debugFlag = False):
     r1 = (360.0 - sum) / 4.0
     r2 = 360 / sum
 
-    print ("Additive")
+    # print ("Additive")
     for e2 in angD:
-        print (str(e2+r1))
-    print ("multiple")
+        additive=e2+r1
+        # print (str(e2+r1))
+    # print ("multiple")
     for e2 in angD:        
-        print (str(e2*r2))
+        # print (str(e2*r2))
         k=round((e2*r2),5)
+        angD[i]=k
         cv2.putText(img,str(k),(pointsList[i][0]-20,pointsList[i][1]-20),cv2.FONT_HERSHEY_COMPLEX,
                 1.5,(0,0,255),2)
         i=i+1
 
-    cv2.imshow("kkkk",img)
-    cv2.waitKey(0)
+    if(debugFlag):
+        cv2.imshow("angele",img)
+        cv2.waitKey(0)
+    print("######end CalculateAngle"+str(datetime.now()))
 
 
 
     return angD,img
 
 
-def CalculateDiameter(image,pointsList):
+def CalculateDiameter(image,pointsList,debugFlag):
     Diameter1=math.sqrt((pointsList[2][0]-pointsList[0][0])**2+(pointsList[2][1]-pointsList[0][1])**2)
     Diameter2=math.sqrt((pointsList[3][0]-pointsList[1][0])**2+(pointsList[3][1]-pointsList[1][1])**2)
-    diam=Diameter1/8.225331497192382
-    print("Diameter is:")
-    print(diam)
     D=Diameter1/Diameter2
     D=round(D,5)
     cv2.putText(image,str(D),((int((pointsList[1][0]-pointsList[0][0])/2)+int(pointsList[0][0])),(int((pointsList[2][1]-pointsList[0][1])/2)+int(pointsList[0][1]))),cv2.FONT_HERSHEY_COMPLEX,
             1.5,(0,0,255),2)
-    cv2.imshow("Diameter",image)
-    cv2.waitKey(0)
+    if (debugFlag):
+        cv2.imshow("Diameter",image)
+        cv2.waitKey(0)
+    print("######end CalculateDiameter"+str(datetime.now()))
     return image,D
 
 
