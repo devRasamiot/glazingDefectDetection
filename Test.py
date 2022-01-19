@@ -11,10 +11,10 @@ def loadConfig(addr = "./RCIP.json"):
     return data
 
 utils = RasamIPUtils()
-camera = utils.cameraInit()
-img = utils.cameraCVCapture()
+# camera = utils.cameraInit()
+# img = utils.cameraCVCapture()
 
-# img = cv2.imread("in9.jpg")
+img = cv2.imread("333.jpeg")
 # img = cv2.resize(img,(1920,1920))
 # pic,cp,dp=algo.ImageProcess(img,loadConfig(),algo.loadConfig(),debugFlag = True)
 anggle=randAlgo.AngelDetectionAlgo(img,loadConfig(),randAlgo.loadConfig(),debugFlag = True,persCalibrationmode=False,cropCalibrationmode=False)

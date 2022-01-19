@@ -1,7 +1,7 @@
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import json
 import time
-import picamera
+# import picamera
 import numpy as np
 from PIL import Image as pilImage
 import sys

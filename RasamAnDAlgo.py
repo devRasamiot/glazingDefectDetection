@@ -45,6 +45,7 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
 
     
     image=UnpersPective(defisheyeimage,algoCfg,debugFlag)
+    image = cv2.resize(image,None,fx=0.5,fy=0.5)
     if(debugFlag):
         cv2.imwrite("unperspective.jpg",image)
     
@@ -58,8 +59,9 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
     pointsList = findOrderedTileCorners(approx1,approx2)
 
     angle,resImage=CalculateAngle(image, pointsList,debugFlag )
+    img,ratiodiameter=CalculateDiameter(resImage,pointsList)
     print(angle)
-    return resImage,angle
+    return img,angle,ratiodiameter
 
 
 
@@ -171,32 +173,32 @@ def CornerDetection(img,mask,algoCfg,debugFlag = False,maskPoint = None):
     sharpen_kernel=np.array(sharpen_kernel)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blur = cv2.medianBlur(gray, 5)
-    if (debugFlag):
-            cv2.imshow("blur",cv2.resize(blur,(1024,768)))
-            cv2.waitKey(0)
-    sharpen_kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-    sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
-    if (debugFlag):
-            cv2.imshow("sharpen",cv2.resize(sharpen,(1024,768)))
-            cv2.waitKey(0)
+    # blur = cv2.medianBlur(gray, 5)
+    # if (debugFlag):
+    #         cv2.imshow("blur",cv2.resize(blur,(1024,768)))
+    #         cv2.waitKey(0)
+    # sharpen_kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    # sharpen = cv2.filter2D(blur, -1, sharpen_kernel)
+    # if (debugFlag):
+    #         cv2.imshow("sharpen",cv2.resize(sharpen,(1024,768)))
+    #         cv2.waitKey(0)
 
-    thresh = cv2.threshold(sharpen,160,255, cv2.THRESH_BINARY_INV)[1]
-    if (debugFlag):
-        cv2.imshow("thresh",cv2.resize(thresh,(1024,768)))
-        cv2.waitKey(0)
+    # thresh = cv2.threshold(sharpen,160,255, cv2.THRESH_BINARY_INV)[1]
+    # if (debugFlag):
+    #     cv2.imshow("thresh",cv2.resize(thresh,(1024,768)))
+    #     cv2.waitKey(0)
     
-    canny = cv2.Canny(sharpen ,canny_min,canny_max)
+    # canny = cv2.Canny(sharpen ,canny_min,canny_max)
         
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
-    close = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel, iterations=2)
-    if (debugFlag):
-            cv2.imshow("close",cv2.resize(close,(1024,768)))
-            cv2.waitKey(0)
+    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+    # close = cv2.morphologyEx(canny, cv2.MORPH_CLOSE, kernel, iterations=2)
+    # if (debugFlag):
+    #         cv2.imshow("close",cv2.resize(close,(1024,768)))
+    #         cv2.waitKey(0)
     
     # img = cv2.cvtColor(close, cv2.COLOR_GRAY2RGB)
 
-    canny = cv2.Canny(close ,canny_min,canny_max)
+    canny = cv2.Canny(img ,canny_min,canny_max)
 
     # canny = cv2.Canny(img ,canny_min,canny_max)
     # # #################################
@@ -361,6 +363,22 @@ def CalculateAngle(img,pointsList,debugFlag = False):
         angD.append(angR)
 
     return angD,image
+
+
+
+def CalculateDiameter(image,pointsList):
+    Diameter1=math.sqrt((pointsList[2][0]-pointsList[0][0])**2+(pointsList[2][1]-pointsList[0][1])**2)
+    Diameter2=math.sqrt((pointsList[3][0]-pointsList[1][0])**2+(pointsList[3][1]-pointsList[1][1])**2)
+    diam=Diameter1/8.225331497192382
+    print("Diameter is:")
+    print(diam)
+    D=Diameter1/Diameter2
+    cv2.putText(image,str(D),((int((pointsList[1][0]-pointsList[0][0])/2)+int(pointsList[0][0])),(int((pointsList[2][1]-pointsList[0][1])/2)+int(pointsList[0][1]))),cv2.FONT_HERSHEY_COMPLEX,
+            1.5,(0,0,255),2)
+    cv2.imshow("Diameter",image)
+    cv2.waitKey(0)
+    return image,D
+
 
 def getPerspectiveTransformMatrix (img,pointsList,algoCfg):
     tileW = algoCfg["unperspectiv_image"]["tileW"]
