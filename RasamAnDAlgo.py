@@ -34,10 +34,19 @@ def AngelDetectionAlgo(img,utilCfg,algoCfg,debugFlag = False,persCalibrationmode
         cv2.imwrite("undistorted.jpg",defisheyeimage)
     # defisheyeimage=img
     if (persCalibrationmode):
+        # pointsList=[[903,468],[1658,367],[891,1172],[1720,1232]]
+        # cv2.circle(defisheyeimage,(903,468),5,(0,0,255),cv2.FILLED)
+        # cv2.circle(defisheyeimage,(1658,367),5,(0,255,0),cv2.FILLED)
+        # cv2.circle(defisheyeimage,(891,1172),5,(255,0,0),cv2.FILLED)
+        # cv2.circle(defisheyeimage,(1720,1232),5,(255,255,0),cv2.FILLED)
+        # cv2.imshow("deg",cv2.resize(defisheyeimage,(1024,768)))
+        # cv2.waitKey(0)
         maskPoint = cuttingconveyor(defisheyeimage)
         result,mask=maskonimage(defisheyeimage,algoCfg,debugFlag,maskPoint = maskPoint)
         approx1,approx2=CornerDetection( result,mask,algoCfg,debugFlag,maskPoint = maskPoint)
         pointsList = findOrderedTileCorners(approx1,approx2)
+        # pointsList=[[903,468],[1658,367],[1720,1232],[891,1172]]
+
         nopers = getPerspectiveTransformMatrix(defisheyeimage,pointsList,algoCfg)
         if(debugFlag):
             cv2.imwrite("unperspective.jpg",nopers)
