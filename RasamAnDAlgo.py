@@ -376,29 +376,30 @@ def CalculateAngle(img,pointsList,debugFlag = False):
 def CalculateAngle2(img,pointsList,debugFlag = False):
     angD=[]
     image=img.copy()
-    pointsList=[[313,313],[686,313],[680,685],[300,686]]
+  
+    print(pointsList)
+    # pointslist=[[313,313],[686,313],[686,685],[313,686]]
     # cv2.circle(image,pointsList[1],5,(0,0,255),cv2.FILLED)
     # cv2.circle(image,pointsList[2],5,(0,0,255),cv2.FILLED)
     # cv2.circle(image,pointsList[3],5,(0,0,255),cv2.FILLED)
     # cv2.circle(defisheyeimage,(1658,367),5,(0,255,0),cv2.FILLED)
     # cv2.circle(defisheyeimage,(891,1172),5,(255,0,0),cv2.FILLED)
     # cv2.circle(defisheyeimage,(1720,1232),5,(255,255,0),cv2.FILLED)
-    cv2.imshow("deg",cv2.resize(image,(1024,768)))
-    cv2.waitKey(0)
-    print("###########################")
-    print(pointsList)
+    # cv2.imshow("deg",cv2.resize(image,(1024,768)))
+    # cv2.waitKey(0)
+
+
     def gradient(pt1,pt2):
         return (pt2[1]-pt1[1])/(pt2[0]-pt1[0])
     for i in range(4):
         cv2.circle(image,pointsList[i],5,(0,0,255),cv2.FILLED)
         cv2.imshow("deg",cv2.resize(image,(1024,768)))
         cv2.waitKey(0)
-        print(i)
-        # print(pointsList[i])
-        # print(pointsList[i-1])
+        # print(i)
+   
         m1=gradient(pointsList[i],pointsList[i-1])
-        print("m1")
-        print(m1)
+        # print("m1")
+        # print(m1)
         if i!=3:
             # print(pointsList[i+1])
             m2=gradient(pointsList[i],pointsList[i+1])
@@ -445,9 +446,31 @@ def CalculateAngle2(img,pointsList,debugFlag = False):
 
     print(angD)
 
+    sum = 0
+    i=0
+    for e in angD:
+        sum = sum + e
+
+    r1 = (360.0 - sum) / 4.0
+    r2 = 360 / sum
+
+    print ("Additive")
+    for e2 in angD:
+        print (str(e2+r1))
+    print ("multiple")
+    for e2 in angD:        
+        print (str(e2*r2))
+        k=round((e2*r2),5)
+        cv2.putText(img,str(k),(pointsList[i][0]-20,pointsList[i][1]-20),cv2.FONT_HERSHEY_COMPLEX,
+                1.5,(0,0,255),2)
+        i=i+1
+
+    cv2.imshow("kkkk",img)
+    cv2.waitKey(0)
 
 
-    return angD,image
+
+    return angD,img
 
 
 def CalculateDiameter(image,pointsList):
@@ -457,6 +480,7 @@ def CalculateDiameter(image,pointsList):
     print("Diameter is:")
     print(diam)
     D=Diameter1/Diameter2
+    D=round(D,5)
     cv2.putText(image,str(D),((int((pointsList[1][0]-pointsList[0][0])/2)+int(pointsList[0][0])),(int((pointsList[2][1]-pointsList[0][1])/2)+int(pointsList[0][1]))),cv2.FONT_HERSHEY_COMPLEX,
             1.5,(0,0,255),2)
     cv2.imshow("Diameter",image)
